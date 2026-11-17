@@ -1,0 +1,251 @@
+PROGRAM 06 – AUTOMATED BUILD PIPELINE USING DOCKER HUB
+
+STEP 1: CREATE PROJECT FOLDER
+
+cd ~
+mkdir program-06
+cd program-06
+
+
+STEP 2: CREATE package.json
+
+Command:
+nano package.json
+
+Paste the following:
+
+{
+  "name": "program-06",
+  "version": "1.0.0",
+  "description": "Automated Build Pipeline using Docker Hub",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}
+
+Save:
+Ctrl + O
+Press Enter
+Ctrl + X
+
+
+STEP 3: CREATE index.js
+
+Command:
+nano index.js
+
+Paste the following:
+
+const express = require("express");
+
+const app = express();
+
+app.get("/", (req, res) => {
+  res.send("Program 6 - Automated Build Pipeline is Working!");
+});
+
+const PORT = 3000;
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
+
+Save:
+Ctrl + O
+Press Enter
+Ctrl + X
+
+
+STEP 4: INSTALL DEPENDENCIES
+
+npm install
+
+
+STEP 5: CREATE .dockerignore
+
+Command:
+nano .dockerignore
+
+Paste:
+
+node_modules
+npm-debug.log
+.git
+
+Save:
+Ctrl + O
+Press Enter
+Ctrl + X
+
+
+STEP 6: CREATE Dockerfile
+
+Command:
+nano Dockerfile
+
+Paste:
+
+FROM node:20-alpine
+
+WORKDIR /app
+
+COPY package*.json ./
+
+RUN npm install
+
+COPY . .
+
+EXPOSE 3000
+
+CMD ["npm", "start"]
+
+Save:
+Ctrl + O
+Press Enter
+Ctrl + X
+
+
+STEP 7: CHECK PROJECT FILES
+
+ls -la
+
+
+STEP 8: BUILD DOCKER IMAGE
+
+sudo docker build -t program-06 .
+
+
+STEP 9: CHECK DOCKER IMAGE
+
+sudo docker images
+
+
+STEP 10: RUN DOCKER CONTAINER
+
+sudo docker run -d -p 3000:3000 --name program06-container program-06
+
+
+STEP 11: CHECK RUNNING CONTAINER
+
+sudo docker ps
+
+
+STEP 12: TEST APPLICATION
+
+Open in browser:
+
+http://localhost:3000
+
+Expected output:
+
+Program 6 - Automated Build Pipeline is Working!
+
+
+STEP 13: CREATE DOCKER HUB REPOSITORY
+
+Open Docker Hub and create a repository named:
+
+program-06
+
+Then log in from the terminal:
+
+sudo docker login
+
+Enter your Docker Hub username and Personal Access Token/password.
+
+
+STEP 14: TAG IMAGE FOR DOCKER HUB
+
+Replace YOUR_DOCKERHUB_USERNAME with your actual Docker Hub username:
+
+sudo docker tag program-06 YOUR_DOCKERHUB_USERNAME/program-06:latest
+
+
+STEP 15: PUSH IMAGE TO DOCKER HUB
+
+sudo docker push YOUR_DOCKERHUB_USERNAME/program-06:latest
+
+
+STEP 16: CREATE GITHUB REPOSITORY
+
+Create a GitHub repository named:
+
+program-06
+
+
+STEP 17: INITIALIZE GIT
+
+Inside the program-06 folder, run:
+
+git init
+
+git config --global user.name "Vrushabh Patil"
+
+git config --global user.email "YOUR_GITHUB_EMAIL"
+
+git add .
+
+git commit -m "Initial commit - Program 06"
+
+git branch -M main
+
+
+STEP 18: CONNECT GITHUB REPOSITORY
+
+Replace YOUR_GITHUB_USERNAME:
+
+git remote add origin https://github.com/YOUR_GITHUB_USERNAME/program-06.git
+
+Check the remote:
+
+git remote -v
+
+
+STEP 19: PUSH PROJECT TO GITHUB
+
+git push -u origin main
+
+
+STEP 20: CREATE GITHUB PERSONAL ACCESS TOKEN
+
+GitHub path:
+
+Profile Picture
+→ Settings
+→ Developer settings
+→ Personal access tokens
+→ Tokens (classic)
+→ Generate new token (classic)
+
+Select:
+
+read:packages
+write:packages
+
+Copy the generated token.
+
+
+STEP 21: LOGIN TO GITHUB CONTAINER REGISTRY (GHCR)
+
+Replace YOUR_GITHUB_TOKEN and YOUR_GITHUB_USERNAME:
+
+echo "YOUR_GITHUB_TOKEN" | sudo docker login ghcr.io -u YOUR_GITHUB_USERNAME --password-stdin
+
+
+STEP 22: TAG IMAGE FOR GHCR
+
+sudo docker tag program-06 ghcr.io/YOUR_GITHUB_USERNAME/program-06:latest
+
+
+STEP 23: PUSH IMAGE TO GHCR
+
+sudo docker push ghcr.io/YOUR_GITHUB_USERNAME/program-06:latest
+
+
+STEP 24: FINAL CHECK
+
+sudo docker images
